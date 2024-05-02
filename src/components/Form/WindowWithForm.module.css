@@ -1,0 +1,93 @@
+.rectangle {
+	width: 505px;
+	height: 100%;
+	background-color: #fff;
+	border-radius: 32px;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	margin-bottom: 130px;
+	padding: 70px 0;
+}
+
+.register {
+	font-size: 36px;
+	margin: 0 0 25px 0;
+}
+
+.reg-form {
+	width: 393px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+input {
+	border: 1px solid #DCDBDD;
+	border-radius: 12px;
+	padding: 0 16px;
+	height: 48px;
+	font-size: 14px;
+}
+
+.reg-form__label {
+	display: flex;
+    flex-direction: column;
+	position: relative;
+}
+
+.reg-form__text {
+	margin-left: 16px;
+	font-size: 14px;
+	margin: 0 0 4px 16px;
+	color: #84818A;
+}
+
+.reg-form__showPassword {
+	position: relative;
+}
+
+.reg-form__showPassword > input {
+	width: calc(393px - 32px);
+}
+
+
+.reg-form__error {
+	color: red;
+	margin: 10px 0 0 16px;
+}
+
+.reg-form__show {
+	width: 24px;
+	height: 24px;
+	background-image: url(../../../public/ic_eye.svg);
+	background-color: transparent;
+	position: absolute;
+	right: 19px;
+	bottom: 13px;
+}
+
+.reg-form__button {
+	color: #fff;
+	background-color: #4285F4;
+	font-size: 14px;
+	padding: 14px 0;
+	border-radius: 12px;
+	text-align: center;
+	margin-top: calc(41px - 30px);
+}
+
+.reg-form__button:disabled {
+	opacity: .5;
+}
+
+.reg-form__button:focus {
+	border: 1px solid blue;
+}
+
+.reg-form__error-submit {
+	color: red;
+	margin: 6px 0 0 0;
+	text-align: center;
+}
+

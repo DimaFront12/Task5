@@ -1,0 +1,78 @@
+.app {
+	text-align: center;
+	width: 318px;
+	height: 420px;
+	background-color: #592B23;
+	margin: 0 auto;
+	margin-top: 200px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	align-items: flex-end;
+}
+
+.result {
+	font-size: 60px;
+	margin: 0 20px 15px 0;
+	color: #fff;
+	white-space: nowrap;
+    overflow: hidden;
+	display: flex;
+	justify-content: flex-end;
+	max-width: 90%;
+}
+
+.buttons {
+	display: flex;
+	gap: 2px;
+}
+
+.numbers-with-clear {
+	width: 238px;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	gap: 2px;
+}
+
+.numbers {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+	flex-direction: row-reverse;
+	gap: 2px;
+}
+
+.numbers > button {
+	width: 78px;
+	height: 62px;
+	background-color: #825D59;
+}
+
+.numbers > button:last-child {
+	width: 100%;
+}
+
+.clear, .zero{
+	height: 62px;
+}
+
+.clear {
+	background-color: #693F39;
+}
+
+.zero {
+	background-color: #825D59;
+}
+
+.operations {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.operator {
+	width: 78px;
+	height: 105px;
+	background-color: #F2A23C;
+}
