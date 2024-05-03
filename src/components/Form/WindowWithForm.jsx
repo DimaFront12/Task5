@@ -1,44 +1,20 @@
 import Styles from './WindowWithForm.module.css';
-import { useState } from 'react';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
-
-const fieldsSchema = yup.object().shape({
-	email: yup
-		.string()
-		.email('Некорректно введена почта. При вводе почты должны быть символы "@" и "."')
-		.required('Поле обязательно для заполнения'),
-	password: yup
-		.string()
-		.min(9, 'Пароль должен быть больше 8 символов')
-		.required('Поле обязательно для заполнения'),
-	repeatPassword: yup
-		.string()
-		.oneOf([yup.ref('password')], 'Пароли не совпадают')
-		.required('Поле обязательно для заполнения')
-});
+import { useRef, useState } from 'react';
+import { useStore } from '../../store/useStore';
 
 export const WindowWithForm = () => {
+	const { getState, updateState } = useStore();
+	const { email, password, repeatPassword } = getState();
 	const [typeInputPass, setTypeInputPass] = useState('password');
 	const [typeInputRepPass, setTypeInputRepPass] = useState('password');
+	const [errorsObj, setErrorsObj] = useState({
+		email: null,
+		password: null,
+		repeatPassword: null,
+		submit: null,
+	})
 
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm({
-		defaultValues: {
-			email: '',
-			password: '',
-			repeatPassword: '',
-		},
-		resolver: yupResolver(fieldsSchema),
-	});
-
-	const errorEmail = errors.email?.message;
-	const errorPassword = errors.password?.message;
-	const errorRepeatPassword = errors.repeatPassword?.message;
+	const submitFormRef = useRef(null);
 
 	const changeTypeInputPass = (evt) => {
 		evt.preventDefault();
@@ -50,24 +26,77 @@ export const WindowWithForm = () => {
 		setTypeInputRepPass(typeInputRepPass === 'password' ? 'text' : 'password');
 	};
 
-	const getData = (formData) => {
-		console.log(formData);
+	const onSubmitForm = (evt) => {
+		evt.preventDefault();
+	};
+
+	const onClickButton = ({ target }) => {
+		if (!email || !password || !repeatPassword) {
+			setErrorsObj({...errorsObj, [target.name]: "Не все поля заполнены"})
+		} else {
+			setErrorsObj({...errorsObj, [target.name]: null});
+			console.log(getState())
+		}
+	}
+
+	const onChange = ({ target }) => {
+		updateState(target.name, target.value);
+
+		if (target.name === "repeatPassword" && !errorsObj.email && !errorsObj.password && target.value === password) {
+			submitFormRef.current.focus()
+		}
+	};
+
+	const onEmailBlur = ({ target }) => {
+		let newError = null;
+
+		const emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i;
+
+		if (!emailRegExp.test(target.value)) {
+			newError =
+				'Некорректно введена почта. При вводе почты должны быть символы "@" и "."';
+		}
+
+		setErrorsObj({...errorsObj, [target.name]: newError})
+	};
+
+	const onPasswordBlur = ({ target }) => {
+		let newError = null;
+
+		if (password.length <= 8) {
+			newError = 'Пароль должен быть больше 8 символов';
+		}
+
+		setErrorsObj({...errorsObj, [target.name]: newError})
+	};
+
+	const onRepeatPasswordBlur = ({ target }) => {
+		let newError = null;
+
+		if (target.value !== password) {
+			newError = 'Пароли не совпадают';
+		}
+
+		setErrorsObj({...errorsObj, [target.name]: newError})
 	};
 
 	return (
 		<div className={Styles.rectangle}>
 			<p className={Styles.register}>Регистрация</p>
-			<form className={Styles['reg-form']} onSubmit={handleSubmit(getData)}>
+			<form className={Styles['reg-form']} onSubmit={onSubmitForm}>
 				<label className={Styles['reg-form__label']}>
 					<p className={Styles['reg-form__text']}>Почта</p>
 					<input
 						className={Styles['reg-form__email']}
+						name="email"
+						value={email}
 						type="email"
 						placeholder="Почта"
-						{...register('email')}
-					/>
-					{errorEmail && (
-						<p className={Styles['reg-form__error']}>{errorEmail}</p>
+						onChange={onChange}
+						onBlur={onEmailBlur}
+					></input>
+					{errorsObj.email && (
+						<p className={Styles['reg-form__error']}>{errorsObj.email}</p>
 					)}
 				</label>
 				<label className={Styles['reg-form__label']}>
@@ -75,17 +104,20 @@ export const WindowWithForm = () => {
 					<div className={Styles['reg-form__showPassword']}>
 						<input
 							className={Styles['reg-form__password']}
+							name="password"
+							value={password}
 							type={typeInputPass}
 							placeholder="Пароль"
-							{...register('password')}
-						/>
-						<i
+							onChange={onChange}
+							onBlur={onPasswordBlur}
+						></input>
+						<button
 							className={Styles['reg-form__show']}
 							onClick={changeTypeInputPass}
-						></i>
+						></button>
 					</div>
-					{errorPassword && (
-						<p className={Styles['reg-form__error']}>{errorPassword}</p>
+					{errorsObj.password && (
+						<p className={Styles['reg-form__error']}>{errorsObj.password}</p>
 					)}
 				</label>
 				<label className={Styles['reg-form__label']}>
@@ -93,26 +125,36 @@ export const WindowWithForm = () => {
 					<div className={Styles['reg-form__showPassword']}>
 						<input
 							className={Styles['reg-form__password']}
+							name="repeatPassword"
+							value={repeatPassword}
 							type={typeInputRepPass}
 							placeholder="Повторите пароль"
-							{...register('repeatPassword')}
-						/>
-						<i
+							onChange={onChange}
+							onBlur={onRepeatPasswordBlur}
+						></input>
+						<button
 							className={Styles['reg-form__show']}
 							onClick={changeTypeInputRepPass}
-						></i>
+						></button>
 					</div>
-					{errorRepeatPassword && (
-						<p className={Styles['reg-form__error']}>{errorRepeatPassword}</p>
+					{errorsObj.repeatPassword && (
+						<p className={Styles['reg-form__error']}>{errorsObj.repeatPassword}</p>
 					)}
 				</label>
+
 				<button
+					ref={submitFormRef}
 					type="submit"
+					name="submit"
 					className={Styles['reg-form__button']}
-					disabled={errorEmail || errorPassword || errorRepeatPassword}
+					disabled={errorsObj.email || errorsObj.password || errorsObj.repeatPassword}
+					onClick={onClickButton}
 				>
 					Зарегистрироваться
 				</button>
+				{errorsObj.submit && (
+					<p className={Styles['reg-form__error-submit']}>{errorsObj.submit}</p>
+				)}
 			</form>
 		</div>
 	);
