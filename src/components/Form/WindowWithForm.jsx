@@ -111,10 +111,10 @@ export const WindowWithForm = () => {
 							onChange={onChange}
 							onBlur={onPasswordBlur}
 						></input>
-						<button
+						<i
 							className={Styles['reg-form__show']}
 							onClick={changeTypeInputPass}
-						></button>
+						></i>
 					</div>
 					{errorsObj.password && (
 						<p className={Styles['reg-form__error']}>{errorsObj.password}</p>
@@ -132,10 +132,10 @@ export const WindowWithForm = () => {
 							onChange={onChange}
 							onBlur={onRepeatPasswordBlur}
 						></input>
-						<button
+						<i
 							className={Styles['reg-form__show']}
 							onClick={changeTypeInputRepPass}
-						></button>
+						></i>
 					</div>
 					{errorsObj.repeatPassword && (
 						<p className={Styles['reg-form__error']}>{errorsObj.repeatPassword}</p>
