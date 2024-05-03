@@ -1,29 +1,27 @@
 import Styles from './WindowWithForm.module.css';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 
 const fieldsSchema = yup.object().shape({
-	email: yup.string()
-		.matches(
-			/^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i,
-			'Некорректно введена почта. При вводе почты должны быть символы "@" и "."',
-		)
+	email: yup
+		.string()
+		.email('Некорректно введена почта. При вводе почты должны быть символы "@" и "."')
 		.required('Поле обязательно для заполнения'),
-	password: yup.string()
+	password: yup
+		.string()
 		.min(9, 'Пароль должен быть больше 8 символов')
 		.required('Поле обязательно для заполнения'),
-	repeatPassword: yup.string()
+	repeatPassword: yup
+		.string()
+		.oneOf([yup.ref('password')], 'Пароли не совпадают')
 		.required('Поле обязательно для заполнения')
-		.oneOf([yup.ref('password')], 'Пароли не совпадают'),
 });
 
 export const WindowWithForm = () => {
 	const [typeInputPass, setTypeInputPass] = useState('password');
 	const [typeInputRepPass, setTypeInputRepPass] = useState('password');
-
-	const submitFormRef = useRef(null);
 
 	const {
 		register,
@@ -36,12 +34,11 @@ export const WindowWithForm = () => {
 			repeatPassword: '',
 		},
 		resolver: yupResolver(fieldsSchema),
-	})
+	});
 
 	const errorEmail = errors.email?.message;
-	const errorPassword = errors.passwordg?.message;
+	const errorPassword = errors.password?.message;
 	const errorRepeatPassword = errors.repeatPassword?.message;
-
 
 	const changeTypeInputPass = (evt) => {
 		evt.preventDefault();
@@ -54,17 +51,7 @@ export const WindowWithForm = () => {
 	};
 
 	const getData = (formData) => {
-		console.log(formData)
-	};
-
-	const onChange = ({ target }) => {
-		if (
-			!errorEmail &&
-			!errorPassword &&
-			target.value === "1"
-		) {
-			submitFormRef.current.focus();
-		}
+		console.log(formData);
 	};
 
 	return (
@@ -75,11 +62,10 @@ export const WindowWithForm = () => {
 					<p className={Styles['reg-form__text']}>Почта</p>
 					<input
 						className={Styles['reg-form__email']}
-						name="email"
 						type="email"
 						placeholder="Почта"
-						{...register("email")}
-					></input>
+						{...register('email')}
+					/>
 					{errorEmail && (
 						<p className={Styles['reg-form__error']}>{errorEmail}</p>
 					)}
@@ -89,15 +75,14 @@ export const WindowWithForm = () => {
 					<div className={Styles['reg-form__showPassword']}>
 						<input
 							className={Styles['reg-form__password']}
-							name="password"
 							type={typeInputPass}
 							placeholder="Пароль"
-							{...register("password")}
-						></input>
-						<button
+							{...register('password')}
+						/>
+						<i
 							className={Styles['reg-form__show']}
 							onClick={changeTypeInputPass}
-						></button>
+						></i>
 					</div>
 					{errorPassword && (
 						<p className={Styles['reg-form__error']}>{errorPassword}</p>
@@ -108,23 +93,20 @@ export const WindowWithForm = () => {
 					<div className={Styles['reg-form__showPassword']}>
 						<input
 							className={Styles['reg-form__password']}
-							name="repeatPassword"
 							type={typeInputRepPass}
 							placeholder="Повторите пароль"
-							onChange={onChange}
-							{...register("repeatPassword")}
-						></input>
-						<button
+							{...register('repeatPassword')}
+						/>
+						<i
 							className={Styles['reg-form__show']}
 							onClick={changeTypeInputRepPass}
-						></button>
+						></i>
 					</div>
 					{errorRepeatPassword && (
 						<p className={Styles['reg-form__error']}>{errorRepeatPassword}</p>
 					)}
 				</label>
 				<button
-					ref={submitFormRef}
 					type="submit"
 					className={Styles['reg-form__button']}
 					disabled={errorEmail || errorPassword || errorRepeatPassword}

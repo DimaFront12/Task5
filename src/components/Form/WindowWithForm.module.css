@@ -67,6 +67,10 @@ input {
 	bottom: 13px;
 }
 
+.reg-form__show:hover {
+	opacity: .7;
+}
+
 .reg-form__button {
 	color: #fff;
 	background-color: #4285F4;
